@@ -13,19 +13,24 @@ module.exports = {
     publicPath: "",
     clean: true,
     assetModuleFilename: "assets/[hash][ext][query]",
+    // clean: {
+    //   keep(asset) {
+    //     return asset.includes('dist/assets');
+    //   },
+    // },
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: "./src/template.html",
     }),
-    new HtmlWebpackPlugin({
-      filename: "menu.html",
-      template: "./src/menu.html",
-    }),
-    new HtmlWebpackPlugin({
-      filename: "aboutUs.html",
-      template: "./src/aboutUs.html",
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename: "menu.html",
+    //   template: "./src/menu.html",
+    // }),
+    // new HtmlWebpackPlugin({
+    //   filename: "aboutUs.html",
+    //   template: "./src/aboutUs.html",
+    // }),
     new MiniCssExtractPlugin({
       filename: "style.css",
     }),

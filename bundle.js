@@ -179,81 +179,97 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 
+;// CONCATENATED MODULE: ./src/shared.js
+const createElement = (tag, classes, id, text, image, event, parent) => {
+  let element = document.createElement(tag);
+
+  classes.forEach(aClass => element.classList.add(aClass));
+
+  if(id !== null) {
+    element.id = id;
+  }
+
+  if(text !== null) {
+    element.textContent = text;
+  }
+
+  if(image !== null) {
+    element.src = image.src;
+    element.alt = image.alt;
+  }
+
+  if(event !== null) {
+    element.addEventListener(event.trigger, () => event.function(element, ...event.args));
+  }
+
+  if(parent !== null) {
+    parent.append(element);
+  }
+
+  return element;
+}
+
+const createSectionBlock = (title, text, imageSource, imageAltText, reversed, parent) => {
+  let section = createElement("div", reversed ? ["section", "section--reversed"] : ["section"], null, null, null, null, parent);
+  let section__textContainer = createElement("div", ["section__text-container"], null, null, null, null, section);
+  let section__title = createElement("div", ["section__title"], null, title, null, null, section__textContainer);
+  let section__text  = createElement("div", ["section__text"], null, text, null, null, section__textContainer);
+  let section__image = createElement("img", ["section__image"], null, null, {src: imageSource, alt: imageAltText}, null, section);
+}
+
+
 // EXTERNAL MODULE: ./src/assets/new-meal-combos.jpg
 var new_meal_combos = __webpack_require__(139);
 // EXTERNAL MODULE: ./src/assets/special-winter-drinks.jpg
 var special_winter_drinks = __webpack_require__(532);
 // EXTERNAL MODULE: ./src/assets/now-hiring.jpg
 var now_hiring = __webpack_require__(703);
-;// CONCATENATED MODULE: ./src/section.js
-const createSectionBlock = (title, text, imageSource, imageAltText, reversed) => {
-  let section = document.createElement("div");
-  section.classList.add("section");
-
-  if(reversed) {
-    section.classList.add("section--reversed");
-  }
-
-  let section__textContainer = document.createElement("div");
-  section__textContainer.classList.add("section__text-container");
-  section.append(section__textContainer);
-
-  let section__title = document.createElement("div");
-  section__title.classList.add("section__title");
-  section__title.textContent = title;
-  section__textContainer.append(section__title);
-
-  let section__text = document.createElement("div");
-  section__text.classList.add("section__text");
-  section__text.textContent = text;
-  section__textContainer.append(section__text);
-
-  let image = document.createElement("img");
-  image.classList.add("section__image");
-  image.src = imageSource;
-  image.alt = imageAltText;
-  section.append(image);
-
-  return section;
-}
-
-
 ;// CONCATENATED MODULE: ./src/home.js
 
 
 
 
 
+
+
 const createContentHome  = () => {
+  document.body.classList.add("body--loading");
+  
   let content = document.querySelector(".content");
 
-  content.append(createSectionBlock(
+  createSectionBlock(
     "New Meal Combos",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere nisi sequi, delectus impedit exercitationem dignissimos 
     nostrum perspiciatis, quis illum ipsam et eaque deserunt fuga dolores, officiis recusandae. Voluptatem natus cum qui, quis perspiciatis mollitia eveniet 
     suscipit repellat delectus iure, dolor molestias officia, perferendis labore nihil hic a iste. Accusamus, mollitia!`,
     new_meal_combos,
     "restaurant server with two food plates",
-    false));
+    false,
+    content
+    );
 
-  content.append(createSectionBlock(
+  createSectionBlock(
     "Special Winter Drinks",
     `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Numquam distinctio recusandae tempora? A animi doloremque quasi 
     dicta ratione. Ex voluptate id nobis incidunt vitae eius aspernatur possimus necessitatibus totam reprehenderit!`,
     special_winter_drinks,
     "group of people sitting at a table and drinking",
-    false
-  ));
+    false,
+    content
+  );
 
-  content.append(createSectionBlock(
+  createSectionBlock(
     "Now Hiring",
     `Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus, illo quas quam, aliquam velit ut veritatis cum nemo 
     voluptate, sint quisquam voluptatum. Voluptate similique consequuntur, odio adipisci itaque exercitationem commodi dicta beatae nemo facere qui ducimus 
     hic, tenetur fuga possimus?`,
     now_hiring,
     "restaurant worker preparing dishes",
-    false
-  ));
+    false,
+    content
+  );
+  
+  document.body.classList.remove("body--loading");
 }
 
 
@@ -309,214 +325,205 @@ var raspberry_cupcakes = __webpack_require__(502);
 
 
 
-
 const createContentMenu = () => {
+  document.body.classList.add("body--loading");
+
   let content = document.querySelector(".content");
-  content.append(createMenu());
-  content.append(createSubmenu("Meals", true));
-  content.append(createSubmenu("Drinks", false));
-  content.append(createSubmenu("Dessert", false));
+
+  createMenu(content);
+  createSubmenu("Meals", true, content);
+  createSubmenu("Drinks", false, content);
+  createSubmenu("Dessert", false, content);
+
+  document.body.classList.remove("body--loading");
 }
 
-const createMenu = () => {
-  let menu = document.createElement("div");
-  menu.classList.add("menu");
-
-  menu.append(createMenuLink("Meals", true));
-  menu.append(createMenuLink("Drinks", false));
-  menu.append(createMenuLink("Dessert", false));
-
-  return menu;
+const createMenu = (parent) => {
+  let menu = createElement("div", ["menu"], null, null, null, null, parent);
+  let menu__links = [];
+  menu__links.push(createElement("a", ["menu__link", "menu__link--selected"], null, "Meals", null, {trigger: "click", function: addMenuLinkEvent, args: []}, menu));
+  menu__links.push(createElement("a", ["menu__link"], null, "Drinks", null, {trigger: "click", function: addMenuLinkEvent, args: []}, menu));
+  menu__links.push(createElement("a", ["menu__link"], null, "Dessert", null, {trigger: "click", function: addMenuLinkEvent, args: []}, menu));
 }
 
-const createMenuLink = (text, selected) => {
-  let menu__link = document.createElement("div");
-  menu__link.classList.add("menu__link");
+const addMenuLinkEvent = (link) => {
+  let previousSelectedLink = document.querySelector(".menu__link--selected");
+  previousSelectedLink.classList.remove("menu__link--selected");
+  link.classList.add("menu__link--selected");
 
-  if(selected) {
-    menu__link.classList.add("menu__link--selected");
-  }
-
-  menu__link.textContent = text;
-
-  menu__link.addEventListener("click", () => {
-    let selectedLink = document.querySelector(".menu__link--selected");
-    selectedLink.classList.remove("menu__link--selected");
-    menu__link.classList.add("menu__link--selected");
-
-    let selectedSubmenu = document.querySelector("#" + selectedLink.textContent);
-    selectedSubmenu.classList.remove("submenu--selected");
-    let clickedSubmenu = document.querySelector("#" + menu__link.textContent);
-    clickedSubmenu.classList.add("submenu--selected");
-  })
-
-  return menu__link;
+  let previousSelectedSubmenu = document.querySelector("#" + previousSelectedLink.textContent);
+  previousSelectedSubmenu.classList.remove("submenu--selected");
+  let selectedSubmenu = document.querySelector("#" + link.textContent);
+  selectedSubmenu.classList.add("submenu--selected");
 }
 
-const createSubmenu = (id, selected) => {
-  let submenu = document.createElement("div");
-  submenu.classList.add("submenu");
-  submenu.id = id;
+const createSubmenu = (category, selected, parent) => {
+  let submenu = createElement("div", selected ? ["submenu", "submenu--selected"] : ["submenu"], category, null, null, null, parent);
+  let submenu__title = createElement("div", ["submenu__title"], null, category, null, null, submenu);
 
-  if(selected) {
-    submenu.classList.add("submenu--selected");
-  }
-
-  let submenu__title = document.createElement("div");
-  submenu__title.classList.add("submenu__title");
-  submenu__title.textContent = id;
-  submenu.append(submenu__title);
-
-  if(id === "Meals") {
+  if(category === "Meals") {
     createMeals(submenu);
-  } else if(id === "Drinks") {
+  } else if(category === "Drinks") {
     createDrinks(submenu);
-  } else if (id === "Dessert") {
+  } else if (category === "Dessert") {
     createDessert(submenu);
   }
-
-  return submenu;
 }
 
-const createMeals = (submenu) => {
-  submenu.append(createSectionBlock(
+const createMeals = (parent) => {
+  createSectionBlock(
     "Chicken Stew",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     chicken_stew,
     "chicken stew dish",
-    false
-  ));
+    false,
+    parent
+  );
 
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Pizza",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     pizza,
     "a pizza dish",
-    false
-  ));
+    false,
+    parent
+  );
 
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Salad",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     salad,
     "a bowl salad",
-    false
-  ));
+    false,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Spaghetti",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     spaghetti,
     "a spaghetti dish",
-    false
-  ));
+    false,
+    parent
+  );
 
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Toast",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     toast,
     "a plate of toast",
-     false
-  ));
+     false,
+     parent
+  );
 }
 
-const createDrinks = (submenu) => {
-  submenu.append(createSectionBlock(
+const createDrinks = (parent) => {
+  createSectionBlock(
     "Lemon Drink",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     lemon_drink,
     "a glass of lemon drink",
-    false
-  ));
+    false,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Mixed Drinks",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     mixed_drinks,
     "many drinks of mixed flavors",
-    true
-  ));
+    true,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Orange Drink",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     orange_drink,
     "a glass of orange drink",
-    false
-  ));
+    false,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Orange Wine",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     orange_wine,
     "a glass of orange wine",
-    true
-  ));
+    true,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Wine",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     wine,
     "a glass of wine",
-    false
-  ));
+    false,
+    parent
+  );
 }
 
-const createDessert = (submenu) => {
-  submenu.append(createSectionBlock(
+const createDessert = (parent) => {
+  createSectionBlock(
     "Brownies",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     brownies,
     "brownies in a plate",
-    true
-  ))
+    true,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Chocolate Mousse",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     chocolate_mousse,
     "a glass of chocolate mousse",
-    true
-  ))
+    true,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Cinnamon Rolls",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     cinnamon_rolls,
     "cinnamon rolls in a plate",
-    true
-  ))
+    true,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Macaroons",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     macaroons,
     "macaroons in a plate",
-    true
-  ))
+    true,
+    parent
+  );
   
-  submenu.append(createSectionBlock(
+  createSectionBlock(
     "Raspberry Cupcakes",
     `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, unde consequuntur vitae quidem recusandae nemo rem 
     nisi illo ab incidunt quae dicta sequi sed quam assumenda debitis iure maxime dolores. Vitae at voluptatem assumenda autem.`,
     raspberry_cupcakes,
     "raspberry cupcakes",
-    true
-  ))
+    true,
+    parent
+  );
 }
 
 
@@ -524,15 +531,19 @@ const createDessert = (submenu) => {
 var founders = __webpack_require__(868);
 // EXTERNAL MODULE: ./src/assets/company-mission.jpg
 var company_mission = __webpack_require__(365);
-;// CONCATENATED MODULE: ./src/aboutUs.js
+;// CONCATENATED MODULE: ./src/about.js
 
 
 
 
-const createContentAboutUs = () => {
+
+
+const createContentAbout = () => {
+  document.body.classList.add("body--loading");
+
   let content = document.querySelector(".content")
 
-  content.append(createSectionBlock(
+  createSectionBlock(
     "Founders",
     `Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis vero quaerat sapiente eos quibusdam excepturi ullam 
     cupiditate eius blanditiis atque. Sequi repudiandae error doloremque eum adipisci eaque, possimus sed repellendus aut ea, commodi dolorem fuga 
@@ -540,54 +551,43 @@ const createContentAboutUs = () => {
     Eum sed dignissimos voluptatem ex delectus, ea reprehenderit natus.`,
     founders,
     "the three founders sitting at a couch and talking",
-    false
-  ));
+    false,
+    content
+  );
 
-  content.append(createSectionBlock(
+  createSectionBlock(
     "Company Mission",
     `Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis dolores corporis fugiat cupiditate consequuntur, 
     accusamus mollitia est, eligendi provident totam possimus quae? Ad perferendis optio odit totam. Sequi quasi officia molestiae suscipit odio, quibusdam 
     cum omnis ex, ad excepturi inventore!`,
     company_mission,
     "group of people putting their hands together in the center",
-    true
-  ));
+    true,
+    content
+  );
 
-  let contacts = document.createElement("div");
-  contacts.classList.add("contacts");
+  let contacts = createElement("div", ["contacts"], null, null, null, null, content);
+  let contacts__title = createElement("div", ["contacts__title"], null, "Contacts", null, null, contacts);
+  let contacts__list = createElement("div", ["contacts__list"], null, null, null, null, contacts);
 
-  let contacts__title = document.createElement("div");
-  contacts__title.classList.add("contacts__title");
-  contacts__title.textContent = "Contacts";
-  contacts.append(contacts__title);
+  createContact("Fancy Restaurant at A street - 000-000-0000", contacts__list);
+  createContact("Fancy Restaurant at B street - 111-111-1111", contacts__list);
+  createContact("Complaints - 222-222-2222", contacts__list);
+  createContact("Careers Department - 333-333-3333", contacts__list);
+  createContact("Kevin - 444-444-4444", contacts__list);
+  createContact("Corporate Relations - 555-555-5555", contacts__list);
 
-  let contacts__list = document.createElement("div");
-  contacts__list.classList.add("contacts__list");
-
-  contacts__list.append(createContact("Fancy Restaurant at A street - 000-000-0000"));
-  contacts__list.append(createContact("Fancy Restaurant at B street - 111-111-1111"));
-  contacts__list.append(createContact("Complaints - 222-222-2222"));
-  contacts__list.append(createContact("Careers Department - 333-333-3333"));
-  contacts__list.append(createContact("Kevin - 444-444-4444"));
-  contacts__list.append(createContact("Corporate Relations - 555-555-5555"));
-
-  contacts.append(contacts__list);
-  content.append(contacts);
+  document.body.classList.remove("body--loading");
 }
 
-const createContact = (text) => {
-  let contacts__contact = document.createElement("li");
-  contacts__contact.classList.add("contacts__contact");
-  contacts__contact.textContent = text;
-
-  return contacts__contact;
+const createContact = (text, parent) => {
+  let contacts__contact = createElement("li", ["contacts__contact"], null, text, null, null, parent);
 }
 
 
 ;// CONCATENATED MODULE: ./src/index.js
-// import everything in assets folder
-// function requireAll(r) { r.keys().forEach(r); }
-// requireAll(require.context("./assets/", true, /\.*$/));
+
+
 
 
 
@@ -596,140 +596,52 @@ const createContact = (text) => {
 
 
 const createHeader = () => {
-  let header = document.createElement("div");
-  header.classList.add("header");
-
-  let header__name = document.createElement("div");
-  header__name.classList.add("header__name");
-  header__name.textContent = "Fancy Restaurant";
-  header.append(header__name);
-
-  let header__menu = document.createElement("div");
-  header__menu.classList.add("header__menu");
-
+  let header = createElement("div", ["header"], null, null, null, null, document.body);
+  let header__name = createElement("div", ["header__name"], null, "Fancy Restaurant", null, null, header);
+  let header__menu = createElement("div", ["header__menu"], null, null, null, null, header);
   let header__links = [];
-  header__links.push(document.createElement("div"));
-  header__links.push(document.createElement("div"));
-  header__links.push(document.createElement("div"));
+  header__links.push(createElement("a", ["header__link", "header__link--selected"], null, "Home", null, {trigger: "click", function: addHeaderLinkEvent, args: [{title: "Fancy Restaurant", function: createContentHome}]}, header__menu));
+  header__links.push(createElement("a", ["header__link"], null, "Menu", null, {trigger: "click", function: addHeaderLinkEvent, args: [{title: "Menu - Fancy Restaurant", function: createContentMenu}]}, header__menu));
+  header__links.push(createElement("a", ["header__link"], null, "About", null, {trigger: "click", function: addHeaderLinkEvent, args: [{title: "About - Fancy Restaurant", function: createContentAbout}]}, header__menu));
+}
 
-  header__links.forEach(link => link.classList.add("header__link"));
-  header__links[0].classList.add("header__link--selected");
+const addHeaderLinkEvent = (link, page) => {
+  document.body.classList.add("body--loading");
 
-  header__links[0].textContent = "Home";
-  header__links[1].textContent = "Menu";
-  header__links[2].textContent = "About Us";
+  let content = document.querySelector(".content");
+  while(content !== null && content.lastChild) {
+    content.removeChild(content.lastChild);
+  }
 
-  header__links[0].id = "home";
-  header__links[1].id = "menu";
-  header__links[2].id = "aboutUs";
+  page.function();
+  document.title = page.title;
 
-  header__links.forEach(link => header__menu.append(link));
+  let previousSelectedLink = document.querySelector(".header__link--selected");
+  previousSelectedLink.classList.remove("header__link--selected");
+  link.classList.add("header__link--selected");
 
-  header.append(header__menu);
-  document.body.append(header);
-
-  let content = document.createElement("div");
-  content.classList.add("content")
-  document.body.append(content);
-
-  header__links[0].addEventListener("click", () => {
-    let content = document.querySelector(".content");
-    while(content.lastChild) {
-      content.removeChild(content.lastChild);
-    }
-    createContentHome();
-    document.title = "Fancy Restaurant";
-
-    let selectedLink = document.querySelector(".header__link--selected");
-    selectedLink.classList.remove("header__link--selected");
-    header__links[0].classList.add("header__link--selected");
-  })
-  
-  header__links[1].addEventListener("click", () => {
-    let content = document.querySelector(".content");
-    while(content.lastChild) {
-      content.removeChild(content.lastChild);
-    }
-    createContentMenu();
-    document.title = "Menu - Fancy Restaurant";
-
-    let selectedLink = document.querySelector(".header__link--selected");
-    selectedLink.classList.remove("header__link--selected");
-    header__links[1].classList.add("header__link--selected");
-  })
-  
-  header__links[2].addEventListener("click", () => {
-    console.log("A");
-    let content = document.querySelector(".content");
-    while(content.lastChild) {
-      content.removeChild(content.lastChild);
-    }
-    createContentAboutUs();
-    document.title = "About Us - Fancy Restaurant";
-
-    let selectedLink = document.querySelector(".header__link--selected");
-    selectedLink.classList.remove("header__link--selected");
-    header__links[2].classList.add("header__link--selected");
-  })
+  document.body.classList.remove("body--loading");
 }
 
 const createFooter = () => {
-  let footer = document.createElement("div");
-  footer.classList.add("footer");
-  footer.textContent = "Property of Fancy Inc.";
+  let footer = createElement("div", ["footer"], null, "Property of Fancy Inc.", null, null, document.body);
 
-  document.body.append(footer);
+  // let footer = document.createElement("div");
+  // footer.classList.add("footer");
+  // footer.textContent = "Property of Fancy Inc.";
+
+  // document.body.append(footer);
 }
 
 
+document.body.classList.add("body--loading");
+
 createHeader();
-
-
+let content = createElement("div", ["content"], null, null, null, null, document.body);
 createContentHome();
 createFooter();
 
-
-
-// let menu__links = document.querySelectorAll(".menu__link");
-// let submenus = document.querySelectorAll(".submenu");
-
-// menu__links.forEach((menu__link) => {
-//   menu__link.addEventListener("click", () => {
-//     for(let link of menu__links.values()) {
-//       if(link == menu__link) {
-//         link.classList.add("menu__link--selected");
-//       } else {
-//         link.classList.remove("menu__link--selected");
-//       }
-//     }
-
-//     for(let submenu of submenus.values()) {
-//       if(submenu.id === menu__link.textContent) {
-//         submenu.classList.remove("submenu--hidden");
-//       } else {
-//         submenu.classList.add("submenu--hidden");
-//       }
-//     }
-//   })
-// });
-
-
-
-// let home = document.querySelector("#home");
-// let menu = document.querySelector("#menu");
-// let aboutUs = document.querySelector("#aboutUs");
-
-// home.addEventListener("click", () => {
-//   createContentHome();
-// });
-
-// menu.addEventListener("click", () => {
-//   createContentMenu();
-// });
-
-// aboutUs.addEventListener("click", () => {
-//   createContentAboutUs();
-// });
+document.body.classList.remove("body--loading");
 })();
 
 /******/ })()

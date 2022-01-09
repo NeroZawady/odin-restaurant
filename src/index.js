@@ -1,145 +1,56 @@
-// import everything in assets folder
-// function requireAll(r) { r.keys().forEach(r); }
-// requireAll(require.context("./assets/", true, /\.*$/));
 import normalize from "./normalize.css"
 import stylesheet from "./style.css";
+
+import { createElement } from "./shared";
 import { createContentHome } from "./home";
 import { createContentMenu } from "./menu";
-import { createContentAboutUs } from "./aboutUs";
+import { createContentAbout } from "./about";
 
 
 const createHeader = () => {
-  let header = document.createElement("div");
-  header.classList.add("header");
-
-  let header__name = document.createElement("div");
-  header__name.classList.add("header__name");
-  header__name.textContent = "Fancy Restaurant";
-  header.append(header__name);
-
-  let header__menu = document.createElement("div");
-  header__menu.classList.add("header__menu");
-
+  let header = createElement("div", ["header"], null, null, null, null, document.body);
+  let header__name = createElement("div", ["header__name"], null, "Fancy Restaurant", null, null, header);
+  let header__menu = createElement("div", ["header__menu"], null, null, null, null, header);
   let header__links = [];
-  header__links.push(document.createElement("div"));
-  header__links.push(document.createElement("div"));
-  header__links.push(document.createElement("div"));
+  header__links.push(createElement("a", ["header__link", "header__link--selected"], null, "Home", null, {trigger: "click", function: addHeaderLinkEvent, args: [{title: "Fancy Restaurant", function: createContentHome}]}, header__menu));
+  header__links.push(createElement("a", ["header__link"], null, "Menu", null, {trigger: "click", function: addHeaderLinkEvent, args: [{title: "Menu - Fancy Restaurant", function: createContentMenu}]}, header__menu));
+  header__links.push(createElement("a", ["header__link"], null, "About", null, {trigger: "click", function: addHeaderLinkEvent, args: [{title: "About - Fancy Restaurant", function: createContentAbout}]}, header__menu));
+}
 
-  header__links.forEach(link => link.classList.add("header__link"));
-  header__links[0].classList.add("header__link--selected");
+const addHeaderLinkEvent = (link, page) => {
+  document.body.classList.add("body--loading");
 
-  header__links[0].textContent = "Home";
-  header__links[1].textContent = "Menu";
-  header__links[2].textContent = "About Us";
+  let content = document.querySelector(".content");
+  while(content !== null && content.lastChild) {
+    content.removeChild(content.lastChild);
+  }
 
-  header__links[0].id = "home";
-  header__links[1].id = "menu";
-  header__links[2].id = "aboutUs";
+  page.function();
+  document.title = page.title;
 
-  header__links.forEach(link => header__menu.append(link));
+  let previousSelectedLink = document.querySelector(".header__link--selected");
+  previousSelectedLink.classList.remove("header__link--selected");
+  link.classList.add("header__link--selected");
 
-  header.append(header__menu);
-  document.body.append(header);
-
-  let content = document.createElement("div");
-  content.classList.add("content")
-  document.body.append(content);
-
-  header__links[0].addEventListener("click", () => {
-    let content = document.querySelector(".content");
-    while(content.lastChild) {
-      content.removeChild(content.lastChild);
-    }
-    createContentHome();
-    document.title = "Fancy Restaurant";
-
-    let selectedLink = document.querySelector(".header__link--selected");
-    selectedLink.classList.remove("header__link--selected");
-    header__links[0].classList.add("header__link--selected");
-  })
-  
-  header__links[1].addEventListener("click", () => {
-    let content = document.querySelector(".content");
-    while(content.lastChild) {
-      content.removeChild(content.lastChild);
-    }
-    createContentMenu();
-    document.title = "Menu - Fancy Restaurant";
-
-    let selectedLink = document.querySelector(".header__link--selected");
-    selectedLink.classList.remove("header__link--selected");
-    header__links[1].classList.add("header__link--selected");
-  })
-  
-  header__links[2].addEventListener("click", () => {
-    console.log("A");
-    let content = document.querySelector(".content");
-    while(content.lastChild) {
-      content.removeChild(content.lastChild);
-    }
-    createContentAboutUs();
-    document.title = "About Us - Fancy Restaurant";
-
-    let selectedLink = document.querySelector(".header__link--selected");
-    selectedLink.classList.remove("header__link--selected");
-    header__links[2].classList.add("header__link--selected");
-  })
+  document.body.classList.remove("body--loading");
 }
 
 const createFooter = () => {
-  let footer = document.createElement("div");
-  footer.classList.add("footer");
-  footer.textContent = "Property of Fancy Inc.";
+  let footer = createElement("div", ["footer"], null, "Property of Fancy Inc.", null, null, document.body);
 
-  document.body.append(footer);
+  // let footer = document.createElement("div");
+  // footer.classList.add("footer");
+  // footer.textContent = "Property of Fancy Inc.";
+
+  // document.body.append(footer);
 }
 
 
+document.body.classList.add("body--loading");
+
 createHeader();
-
-
+let content = createElement("div", ["content"], null, null, null, null, document.body);
 createContentHome();
 createFooter();
 
-
-
-// let menu__links = document.querySelectorAll(".menu__link");
-// let submenus = document.querySelectorAll(".submenu");
-
-// menu__links.forEach((menu__link) => {
-//   menu__link.addEventListener("click", () => {
-//     for(let link of menu__links.values()) {
-//       if(link == menu__link) {
-//         link.classList.add("menu__link--selected");
-//       } else {
-//         link.classList.remove("menu__link--selected");
-//       }
-//     }
-
-//     for(let submenu of submenus.values()) {
-//       if(submenu.id === menu__link.textContent) {
-//         submenu.classList.remove("submenu--hidden");
-//       } else {
-//         submenu.classList.add("submenu--hidden");
-//       }
-//     }
-//   })
-// });
-
-
-
-// let home = document.querySelector("#home");
-// let menu = document.querySelector("#menu");
-// let aboutUs = document.querySelector("#aboutUs");
-
-// home.addEventListener("click", () => {
-//   createContentHome();
-// });
-
-// menu.addEventListener("click", () => {
-//   createContentMenu();
-// });
-
-// aboutUs.addEventListener("click", () => {
-//   createContentAboutUs();
-// });
+document.body.classList.remove("body--loading");

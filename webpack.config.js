@@ -13,24 +13,11 @@ module.exports = {
     publicPath: "",
     clean: true,
     assetModuleFilename: "assets/[hash][ext][query]",
-    // clean: {
-    //   keep(asset) {
-    //     return asset.includes('dist/assets');
-    //   },
-    // },
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/template.html",
     }),
-    // new HtmlWebpackPlugin({
-    //   filename: "menu.html",
-    //   template: "./src/menu.html",
-    // }),
-    // new HtmlWebpackPlugin({
-    //   filename: "aboutUs.html",
-    //   template: "./src/aboutUs.html",
-    // }),
     new MiniCssExtractPlugin({
       filename: "style.css",
     }),
@@ -59,8 +46,6 @@ module.exports = {
         minimizer: {
           implementation: ImageMinimizerPlugin.imageminMinify,
           options: {
-            // Lossless optimization with custom option
-            // Feel free to experiment with options for better result for you
             plugins: [
               ["jpegtran", { progressive: true }],
             ],
